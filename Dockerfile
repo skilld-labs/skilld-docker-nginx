@@ -1,17 +1,13 @@
-FROM alpine:3.4
-MAINTAINER Wodby <hello@wodby.com>
+FROM alpine:3.6
 
-ENV NGX_VER 1.10.1
+ENV NGX_VER 1.13.3
 ENV NGX_UP_VER 0.9.1
-ENV NGX_LUA_VER 0.10.5
-ENV NGX_NDK_VER 0.3.0
 ENV NGX_NXS_VER 0.54
-ENV LUAJIT_LIB /usr/lib/
-ENV LUAJIT_INC /usr/include/luajit-2.0/
 
 # Create user and groups
 # Based on http://git.alpinelinux.org/cgit/aports/tree/main/nginx-initscripts/nginx-initscripts.pre-install
-RUN addgroup -S -g 82 www-data && \
+RUN set -ex && \
+    addgroup -S -g 82 www-data && \
     addgroup -S nginx && \
     adduser -S -D -H -h /var/www/localhost/htdocs -s /sbin/nologin -G nginx -g nginx nginx && \
     addgroup nginx www-data
@@ -43,9 +39,7 @@ RUN apk add --update \
 
     # Download nginx and its modules source code
     wget -qO- http://nginx.org/download/nginx-${NGX_VER}.tar.gz | tar xz -C /tmp/ && \
-    wget -qO- https://github.com/simpl/ngx_devel_kit/archive/v${NGX_NDK_VER}.tar.gz | tar xz -C /tmp/ && \
     wget -qO- https://github.com/masterzen/nginx-upload-progress-module/archive/v${NGX_UP_VER}.tar.gz | tar xz -C /tmp/ && \
-    wget -qO- https://github.com/openresty/lua-nginx-module/archive/v${NGX_LUA_VER}.tar.gz | tar xz -C /tmp/ && \
     wget -qO- https://github.com/nbs-system/naxsi/archive/${NGX_NXS_VER}.tar.gz | tar xz -C /tmp/ && \
 
     # Make and install nginx with modules
@@ -88,9 +82,7 @@ RUN apk add --update \
         --with-stream_ssl_module \
         --with-http_geoip_module \
         --with-ld-opt="-Wl,-rpath,/usr/lib/" \
-        --add-module=/tmp/ngx_devel_kit-${NGX_NDK_VER}/ \
         --add-module=/tmp/nginx-upload-progress-module-${NGX_UP_VER}/ \
-        --add-module=/tmp/lua-nginx-module-${NGX_LUA_VER}/ \
         --add-module=/tmp/naxsi-${NGX_NXS_VER}/naxsi_src/ && \
     make -j2 && \
     make install && \
