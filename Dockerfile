@@ -20,7 +20,6 @@ RUN set -ex && \
 RUN apk add --update \
 
         # Base packages
-        bash \
         openssl \
         ca-certificates \
         pcre \
@@ -109,19 +108,9 @@ COPY nginx.conf /etc/nginx/nginx.conf
 COPY fastcgi_params /etc/nginx/fastcgi_params
 COPY drupal* /etc/nginx/conf.d/
 
-RUN if [ -z $NGINX_FASTCGI_BUFFERS ] ; then export NGINX_FASTCGI_BUFFERS="16 32k"; fi
-RUN if [ -z $NGINX_FASTCGI_BUFFER_SIZE ] ; then export NGINX_FASTCGI_BUFFER_SIZE="32k"; fi
-RUN if [ -z $NGINX_FASTCGI_READ_TIMEOUT ] ; then export NGINX_FASTCGI_READ_TIMEOUT="900"; fi
-RUN if [ -z $NGINX_DOCUMENT_ROOT ] ; then export NGINX_DOCUMENT_ROOT="/var/www/html/"; fi
-
+RUN if [ -z $NGINX_FASTCGI_BUFFERS ] ; then export NGINX_FASTCGI_BUFFERS="16 32k"; fi; if [ -z $NGINX_FASTCGI_BUFFER_SIZE ] ; then export NGINX_FASTCGI_BUFFER_SIZE="32k"; fi; if [ -z $NGINX_FASTCGI_READ_TIMEOUT ] ; then export NGINX_FASTCGI_READ_TIMEOUT="900"; fi; if [ -z $NGINX_DOCUMENT_ROOT ] ; then export NGINX_DOCUMENT_ROOT="/var/www/html/"; fi
 RUN sed -i "s!{{ NGINX_DOCUMENT_ROOT }}!${NGINX_DOCUMENT_ROOT}!g" /etc/nginx/conf.d/drupal8.conf
-RUN sed -i "s/{{ NGINX_FASTCGI_BUFFERS }}/${NGINX_FASTCGI_BUFFERS}/" /etc/nginx/nginx.conf
-RUN sed -i "s/{{ NGINX_FASTCGI_BUFFER_SIZE }}/${NGINX_FASTCGI_BUFFER_SIZE}/" /etc/nginx/nginx.conf
-RUN sed -i "s/{{ NGINX_FASTCGI_READ_TIMEOUT }}/${NGINX_FASTCGI_READ_TIMEOUT}/" /etc/nginx/nginx.conf
-
-
-WORKDIR ${NGINX_DOCUMENT_ROOT}
-VOLUME ${NGINX_DOCUMENT_ROOT}
+RUN sed -i "s/{{ NGINX_FASTCGI_BUFFERS }}/${NGINX_FASTCGI_BUFFERS}/;s/{{ NGINX_FASTCGI_BUFFER_SIZE }}/${NGINX_FASTCGI_BUFFER_SIZE}/;s/{{ NGINX_FASTCGI_READ_TIMEOUT }}/${NGINX_FASTCGI_READ_TIMEOUT}/" /etc/nginx/nginx.conf
 
 EXPOSE 80 443
 
