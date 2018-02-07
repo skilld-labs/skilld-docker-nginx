@@ -1,8 +1,8 @@
-FROM alpine:3.6
+FROM alpine:edge
 
-ENV NGX_VER 1.13.3
-ENV NGX_UP_VER 0.9.1
-ENV NGX_NXS_VER 0.54
+ENV NGX_VER 1.13.8
+ENV NGX_UP_VER 0.9.0
+ENV NGX_NXS_VER 0.55.3
 ENV NGINX_DOCUMENT_ROOT /var/www/html/
 ENV NGINX_FASTCGI_BUFFERS "16 32k"
 ENV NGINX_FASTCGI_BUFFER_SIZE "32k"
@@ -18,8 +18,6 @@ RUN set -ex && \
 
 # Install packages
 RUN apk add --update \
-
-        # Base packages
         openssl \
         ca-certificates \
         pcre \
@@ -29,8 +27,6 @@ RUN apk add --update \
         tar \
         libcrypto1.0 \
         libssl1.0 \
-
-        # Temp packages
         tar \
         build-base \
         autoconf \
@@ -40,13 +36,9 @@ RUN apk add --update \
         zlib-dev \
         luajit-dev \
         geoip-dev && \
-
-    # Download nginx and its modules source code
     wget -qO- http://nginx.org/download/nginx-${NGX_VER}.tar.gz | tar xz -C /tmp/ && \
     wget -qO- https://github.com/masterzen/nginx-upload-progress-module/archive/v${NGX_UP_VER}.tar.gz | tar xz -C /tmp/ && \
     wget -qO- https://github.com/nbs-system/naxsi/archive/${NGX_NXS_VER}.tar.gz | tar xz -C /tmp/ && \
-
-    # Make and install nginx with modules
     cd /tmp/nginx-${NGX_VER} && \
     ./configure \
         --prefix=/usr/share/nginx \
@@ -90,8 +82,6 @@ RUN apk add --update \
         --add-module=/tmp/naxsi-${NGX_NXS_VER}/naxsi_src/ && \
     make -j2 && \
     make install && \
-
-    # Cleanup
     apk del --purge *-dev build-base autoconf libtool && \
     rm -rf /var/cache/apk/* /tmp/*
 
@@ -108,7 +98,6 @@ COPY nginx.conf /etc/nginx/nginx.conf
 COPY fastcgi_params /etc/nginx/fastcgi_params
 COPY drupal* /etc/nginx/conf.d/
 
-RUN if [ -z $NGINX_FASTCGI_BUFFERS ] ; then export NGINX_FASTCGI_BUFFERS="16 32k"; fi; if [ -z $NGINX_FASTCGI_BUFFER_SIZE ] ; then export NGINX_FASTCGI_BUFFER_SIZE="32k"; fi; if [ -z $NGINX_FASTCGI_READ_TIMEOUT ] ; then export NGINX_FASTCGI_READ_TIMEOUT="900"; fi; if [ -z $NGINX_DOCUMENT_ROOT ] ; then export NGINX_DOCUMENT_ROOT="/var/www/html/"; fi
 RUN sed -i "s!{{ NGINX_DOCUMENT_ROOT }}!${NGINX_DOCUMENT_ROOT}!g" /etc/nginx/conf.d/drupal8.conf
 RUN sed -i "s/{{ NGINX_FASTCGI_BUFFERS }}/${NGINX_FASTCGI_BUFFERS}/;s/{{ NGINX_FASTCGI_BUFFER_SIZE }}/${NGINX_FASTCGI_BUFFER_SIZE}/;s/{{ NGINX_FASTCGI_READ_TIMEOUT }}/${NGINX_FASTCGI_READ_TIMEOUT}/" /etc/nginx/nginx.conf
 
