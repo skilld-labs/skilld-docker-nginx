@@ -1,4 +1,4 @@
-[![](https://images.microbadger.com/badges/image/skilldlabs/nginx:1.10.1.svg)](https://microbadger.com/images/skilldlabs/nginx:1.10.1 "Get your own image badge on microbadger.com")
+[![](https://images.microbadger.com/badges/image/skilldlabs/nginx:1.18.svg)](https://microbadger.com/images/skilldlabs/nginx:1.18 "Get your own image badge on microbadger.com")
 
 # skilld-docker-nginx
 
