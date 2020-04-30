@@ -1,4 +1,4 @@
-FROM alpine:3.10
+FROM alpine:3.11
 
 RUN set -ex &&\
   apk add --no-cache --upgrade nginx nginx-mod-http-upload-progress
