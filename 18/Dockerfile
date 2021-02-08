@@ -12,7 +12,7 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
   maintainer="Andy Postnikov <andypost@ya.ru>"
 
 RUN set -ex &&\
-  apk add --no-cache --upgrade nginx nginx-mod-http-upload-progress
+  apk add --no-cache --upgrade nginx nginx-mod-http-upload-progress nginx-mod-http-brotli
 
 COPY fastcgi_params nginx.conf upstream /etc/nginx/
 COPY default.conf /etc/nginx/conf.d/
