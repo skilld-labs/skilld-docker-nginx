@@ -1,4 +1,4 @@
-FROM alpine:edge
+FROM alpine:3.13
 
 ARG BUILD_DATE
 ARG VCS_REF
@@ -7,7 +7,7 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
   org.label-schema.vcs-ref=$VCS_REF \
   org.label-schema.schema-version="1.0" \
   org.label-schema.name="skilld-nginx" \
-  org.label-schema.description="Skilld nginx for Drupal" \
+  org.label-schema.description="Skilld nginx 1.18 for Drupal" \
   org.label-schema.vcs-url="https://github.com/skilld-labs/skilld-docker-nginx" \
   maintainer="Andy Postnikov <andypost@ya.ru>"
 
