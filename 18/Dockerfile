@@ -14,6 +14,9 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
 RUN set -ex &&\
   apk add --no-cache --upgrade nginx nginx-mod-http-upload-progress nginx-mod-http-brotli
 
+RUN apk add --no-cache openssl
+RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/ssl-cert-snakeoil.key -out /etc/ssl/certs/ssl-cert-snakeoil.pem -subj "/C=AT/ST=Vienna/L=Vienna/O=Security/OU=Development/CN=example.com"
+
 COPY fastcgi_params nginx.conf upstream /etc/nginx/
 COPY default.conf /etc/nginx/conf.d/
 
