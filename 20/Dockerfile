@@ -12,7 +12,9 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
   maintainer="Andy Postnikov <andypost@ya.ru>"
 
 RUN set -ex &&\
-  apk add --no-cache --upgrade nginx nginx-mod-http-upload-progress nginx-mod-http-brotli
+  apk --update upgrade --clean-protected --prune --purge &&\
+  apk add --upgrade nginx nginx-mod-http-upload-progress nginx-mod-http-brotli &&\
+  rm -fr /var/cache/apk/*
 
 COPY fastcgi_params nginx.conf upstream /etc/nginx/
 COPY default.conf /etc/nginx/conf.d/
