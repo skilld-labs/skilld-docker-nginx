@@ -1,5 +1,5 @@
 NAME = skilldlabs/nginx
-TAGS ?= 20
+TAGS ?= 20 22
 
 .PHONY: all build push
 
